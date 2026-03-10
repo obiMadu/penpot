@@ -72,7 +72,7 @@ ENV NODE_ENV=production
 ENV PENPOT_MCP_SERVER_HOST=0.0.0.0
 ENV PENPOT_MCP_SERVER_PORT=4401
 ENV PENPOT_MCP_WEBSOCKET_PORT=4402
-ENV WS_URI=http://localhost:4402
+ENV WS_URI=ws://penpot-mcp:4402
 
 # Start both servers
 CMD ["pnpm", "run", "start"]
