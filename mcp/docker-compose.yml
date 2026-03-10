@@ -21,7 +21,7 @@ services:
       - PENPOT_MCP_REMOTE_MODE=${PENPOT_MCP_REMOTE_MODE:-false}
       
       # Plugin Configuration
-      - WS_URI=${WS_URI:-http://localhost:4402}
+      - WS_URI=${WS_URI:-ws://penpot-mcp:4402}
       - MULTI_USER_MODE=${MULTI_USER_MODE:-false}
       
       # Logging Configuration
