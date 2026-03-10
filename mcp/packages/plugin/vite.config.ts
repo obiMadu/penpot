@@ -34,7 +34,7 @@ export default defineConfig({
         host: "0.0.0.0",
         port: 4400,
         cors: true,
-        allowedHosts: [],
+        allowedHosts: true,
     },
     define: {
         IS_MULTI_USER_MODE: JSON.stringify(process.env.MULTI_USER_MODE === "true"),
