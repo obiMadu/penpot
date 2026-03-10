@@ -104,6 +104,82 @@ This bootstrap command will:
   * build all components
   * start all components
 
+### Alternative: Docker Setup
+
+You can also run the Penpot MCP server using Docker, which eliminates the need to install Node.js and dependencies locally.
+
+#### Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/install/) (optional, but recommended)
+
+#### Quick Start with Docker
+
+1. Clone the repository and navigate to the mcp directory:
+
+```shell
+git clone https://github.com/penpot/penpot.git
+cd penpot/mcp
+```
+
+2. Create your environment configuration:
+
+```shell
+cp .env.example .env
+```
+
+3. Edit `.env` and customize the values as needed. At minimum, review:
+   - `PENPOT_MCP_SERVER_ADDRESS` - Set to your host's IP or `localhost` for local development
+
+4. Build and start the containers:
+
+```shell
+docker-compose up -d
+```
+
+5. View logs:
+
+```shell
+docker-compose logs -f penpot-mcp
+```
+
+6. Stop the containers:
+
+```shell
+docker-compose down
+```
+
+#### Using Docker Directly (without Docker Compose)
+
+```shell
+# Build the image
+docker build -t obimadu/penpot-mcp .
+
+# Run the container
+docker run -d \
+  --name penpot-mcp \
+  -p 4400:4400 \
+  -p 4401:4401 \
+  -p 4402:4402 \
+  -p 4403:4403 \
+  -e PENPOT_MCP_SERVER_HOST=0.0.0.0 \
+  -e WS_URI=http://localhost:4402 \
+  obimadu/penpot-mcp
+```
+
+#### Docker Configuration
+
+The Docker setup uses the following ports:
+
+| Port | Service | Description |
+|------|---------|-------------|
+| 4400 | Plugin Server | Serves the Penpot MCP plugin files |
+| 4401 | MCP Server | HTTP/SSE endpoints for MCP clients |
+| 4402 | WebSocket | Plugin-to-server communication |
+| 4403 | REPL Server | Development/debugging interface |
+
+All environment variables can be configured via the `.env` file when using Docker Compose. See `.env.example` for all available options.
+
 ### 2. Load the Plugin in Penpot and Establish the Connection
 
 > [!NOTE]
@@ -238,12 +314,18 @@ The Penpot MCP server can be configured using environment variables.
 
 | Environment Variable               | Description                                                                | Default      |
 |------------------------------------|----------------------------------------------------------------------------|--------------|
-| `PENPOT_MCP_SERVER_LISTEN_ADDRESS` | Address on which the MCP server listens (binds to)                         | `localhost`  |
+| `PENPOT_MCP_SERVER_HOST`           | Host address on which the MCP server listens (binds to)                    | `0.0.0.0`    |
 | `PENPOT_MCP_SERVER_PORT`           | Port for the HTTP/SSE server                                               | `4401`       |
 | `PENPOT_MCP_WEBSOCKET_PORT`        | Port for the WebSocket server (plugin connection)                          | `4402`       |
 | `PENPOT_MCP_REPL_PORT`             | Port for the REPL server (development/debugging)                           | `4403`       |
-| `PENPOT_MCP_SERVER_ADDRESS`        | Hostname or IP address via which clients can reach the MCP server          | `localhost`  |
 | `PENPOT_MCP_REMOTE_MODE`           | Enable remote mode (disables file system access). Set to `true` to enable. | `false`      |
+
+### Plugin Configuration
+
+| Environment Variable | Description                                                          | Default                |
+|----------------------|----------------------------------------------------------------------|------------------------|
+| `WS_URI`             | WebSocket URI for the plugin to connect to the MCP server           | `http://localhost:4402` |
+| `MULTI_USER_MODE`    | Enable multi-user mode (requires user tokens for authentication)    | `false`                |
 
 ### Logging Configuration
 
@@ -251,12 +333,6 @@ The Penpot MCP server can be configured using environment variables.
 |------------------------|------------------------------------------------------|----------|
 | `PENPOT_MCP_LOG_LEVEL` | Log level: `trace`, `debug`, `info`, `warn`, `error` | `info`   |
 | `PENPOT_MCP_LOG_DIR`   | Directory for log files                              | `logs`   |
-
-### Plugin Server Configuration
-
-| Environment Variable                      | Description                                                                             | Default      |
-|-------------------------------------------|-----------------------------------------------------------------------------------------|--------------|
-| `PENPOT_MCP_PLUGIN_SERVER_LISTEN_ADDRESS` | Address on which the plugin web server listens (single address or comma-separated list) | (local only) |
 
 ## Beyond Local Execution
 
@@ -270,12 +346,10 @@ you may set the following environment variables to configure the two servers
 (MCP server & plugin server) appropriately:
  * `PENPOT_MCP_REMOTE_MODE=true`: This ensures that the MCP server is operating
    in remote mode, with local file system access disabled.
- * `PENPOT_MCP_SERVER_LISTEN_ADDRESS` and `PENPOT_MCP_PLUGIN_SERVER_LISTEN_ADDRESS`:
-   Set these according to your requirements for remote connectivity.
+ * `PENPOT_MCP_SERVER_HOST`: Set this according to your requirements for remote connectivity.
    To bind all interfaces, use `0.0.0.0` (use caution in untrusted networks).
- * `PENPOT_MCP_SERVER_ADDRESS=<your-address>`: This sets the hostname or IP address
-   where the MCP server can be reached. The Penpot MCP Plugin uses this to construct
-   the WebSocket URL as `ws://<your-address>:<port>` (default port: `4402`).
+ * `WS_URI=<your-websocket-uri>`: This sets the WebSocket URI where the plugin can reach
+   the MCP server (e.g., `ws://your-domain.com:4402`).
 
 ## Development
 

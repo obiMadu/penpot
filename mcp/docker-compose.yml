@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  penpot-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: obimadu/penpot-mcp:latest
+    container_name: penpot-mcp
+    ports:
+      - "${PLUGIN_PORT:-4400}:4400"  # Plugin web server
+      - "${PENPOT_MCP_SERVER_PORT:-4401}:4401"  # MCP HTTP/SSE server
+      - "${PENPOT_MCP_WEBSOCKET_PORT:-4402}:4402"  # WebSocket server
+      - "${PENPOT_MCP_REPL_PORT:-4403}:4403"  # REPL server (optional)
+    environment:
+      # Server Configuration
+      - PENPOT_MCP_SERVER_HOST=${PENPOT_MCP_SERVER_HOST:-0.0.0.0}
+      - PENPOT_MCP_SERVER_PORT=${PENPOT_MCP_SERVER_PORT:-4401}
+      - PENPOT_MCP_WEBSOCKET_PORT=${PENPOT_MCP_WEBSOCKET_PORT:-4402}
+      - PENPOT_MCP_REPL_PORT=${PENPOT_MCP_REPL_PORT:-4403}
+      - PENPOT_MCP_REMOTE_MODE=${PENPOT_MCP_REMOTE_MODE:-false}
+      
+      # Plugin Configuration
+      - WS_URI=${WS_URI:-http://localhost:4402}
+      - MULTI_USER_MODE=${MULTI_USER_MODE:-false}
+      
+      # Logging Configuration
+      - PENPOT_MCP_LOG_LEVEL=${PENPOT_MCP_LOG_LEVEL:-info}
+      - PENPOT_MCP_LOG_DIR=${PENPOT_MCP_LOG_DIR:-logs}
+    volumes:
+      - ./logs:${PENPOT_MCP_LOG_DIR:-logs}
+    restart: unless-stopped
+    networks:
+      - penpot-mcp-network
+
+networks:
+  penpot-mcp-network:
+    driver: bridge
