@@ -1,0 +1,53 @@
+# Node modules
+node_modules/
+packages/*/node_modules/
+
+# Build outputs
+dist/
+packages/*/dist/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Documentation
+*.md
+docs/
+resources/
+
+# Tests
+test/
+tests/
+coverage/
+
+# CI
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Misc
+.DS_Store
+Thumbs.db
