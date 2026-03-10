@@ -24,9 +24,6 @@ services:
       - WS_URI=${WS_URI:-ws://penpot-mcp:4402}
       - MULTI_USER_MODE=${MULTI_USER_MODE:-false}
       
-      # Penpot Integration - URL for Penpot to connect to this MCP server
-      - PENPOT_MCP_SERVER_URI=${PENPOT_MCP_SERVER_URI:-ws://penpot-mcp:4402}
-      
       # Logging Configuration
       - PENPOT_MCP_LOG_LEVEL=${PENPOT_MCP_LOG_LEVEL:-info}
       - PENPOT_MCP_LOG_DIR=${PENPOT_MCP_LOG_DIR:-logs}
